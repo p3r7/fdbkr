@@ -1,0 +1,283 @@
+Engine_Fdbkr : CroneEngine {
+
+	var <synth;
+
+	*new { arg context, doneCallback;
+		^super.new(context, doneCallback);
+	}
+
+	alloc {
+		SynthDef(\synth, { |inL, inR, out,
+			hz1=100.0, hz2=300.0, hz3=510.0, hz4=770.0, hz5=1080.0, hz6=1480.0, hz7=2000.0, hz8=2700.0,
+			hz9=3700.0, hz10=5300.0, hz11=7700.0, hz12=7700.0,
+			a1=1.0, a2=1.0, a3=1.0, a4=1.0, a5=1.0, a6=1.0, a7=1.0, a8=1.0,
+			a9=1.0, a10=1.0, a11=1.0, a12=1.0,
+			effect_granulator=1.0, effect_graintrigger=10, grainDur=0.1, effect_grainrate=1, effect_grainpos=0, effect_graininterp=2, effect_grainmul=1|
+
+            var dry,
+			b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12,
+			grnBuf1, grnBufDur,
+			g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12,
+			wet, shifted, local, mix;
+
+            dry = [In.ar(inL), In.ar(inR)];
+            // dry = DFM1.ar(dry, freq, res, gain, type, noiseLevel).softclip;
+
+			b1 = BPF.ar(dry, hz1, 0.3);
+			b2 = BPF.ar(dry, hz2, 0.3);
+			b3 = BPF.ar(dry, hz3, 0.3);
+			b4 = BPF.ar(dry, hz4, 0.3);
+			b5 = BPF.ar(dry, hz5, 0.3);
+			b6 = BPF.ar(dry, hz6, 0.3);
+			b7 = BPF.ar(dry, hz7, 0.3);
+			b8 = BPF.ar(dry, hz8, 0.3);
+			b9 = BPF.ar(dry, hz9, 0.3);
+			b10 = BPF.ar(dry, hz10, 0.3);
+			b11 = BPF.ar(dry, hz11, 0.3);
+			b12 = BPF.ar(dry, hz12, 0.3);
+
+			// grnBufDur = 1.0;
+			grnBufDur = 0.1;
+
+            // "Hello World!".postln;
+
+            // {(SinOsc.ar*0.2)!2}.play;
+
+			// gBuf1 = Buffer.alloc(context.server, context.server.sampleRate*grnBufDur);
+			// RecordBuf.ar(b1, gBuf1);
+			// GrainBuf.ar(2, Impulse.kr(effect_graintrigger), grainDur, gBuf1);
+
+			effect_granulator = Lag.kr(effect_granulator, 0.2);
+			g1 = (b1 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b1,
+				0
+			));
+			g2 = (b2 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b2,
+				0
+			));
+			g3 = (b3 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b3,
+				0
+			));
+			g4 = (b4 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b4,
+				0
+			));
+			g5 = (b5 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b5,
+				0
+			));
+			g6 = (b6 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b6,
+				0
+			));
+			g7 = (b7 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b7,
+				0
+			));
+			g8 = (b8 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b8,
+				0
+			));
+			g9 = (b9 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b9,
+				0
+			));
+			g10 = (b10 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b10,
+				0
+			));
+			g11 = (b11 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b11,
+				0
+			));
+			g12 = (b12 * (1- effect_granulator)) +
+			(effect_granulator*GrainIn.ar(
+				2,
+				Impulse.kr(effect_graintrigger),
+				grainDur,
+				b12,
+				0
+			));
+
+
+			mix = Mix.new([
+				g1 * a1,
+				g2 * a2,
+				g3 * a3,
+				g4 * a4,
+				g5 * a5,
+				g6 * a6,
+				g7 * a7,
+				g8 * a8,
+				g9 * a9,
+				g10 * a10,
+				g11 * a11,
+				g12 * a12
+			]);
+
+
+
+            // local = LocalIn.ar(2);
+            // wet = JPverb.ar(dry + local, t60, damp, size, diff, modDepth, modFreq, low, mid, high, lowcut, highcut);
+            // shifted = PitchShift.ar(wet, windowSize, pitchRatio, pitchDispersion, timeDispersion);
+            // LocalOut.ar(shifted * shimmer);
+            // wet = LeakDC.ar(wet);
+            // mix = Mix.new([dry * amp, wet * verb]);
+
+			Out.ar(out, mix);
+		}).add;
+
+		context.server.sync;
+
+		synth = Synth.new(\synth, [
+			\inL, context.in_b[0].index,
+			\inR, context.in_b[1].index,
+			\out, context.out_b.index],
+		context.xg);
+
+		this.addCommand("hz1", "f", {|msg|
+			synth.set(\hz1, msg[1]);
+		});
+		this.addCommand("hz2", "f", {|msg|
+			synth.set(\hz2, msg[1]);
+		});
+		this.addCommand("hz3", "f", {|msg|
+			synth.set(\hz3, msg[1]);
+		});
+		this.addCommand("hz4", "f", {|msg|
+			synth.set(\hz4, msg[1]);
+		});
+		this.addCommand("hz5", "f", {|msg|
+			synth.set(\hz5, msg[1]);
+		});
+		this.addCommand("hz6", "f", {|msg|
+			synth.set(\hz6, msg[1]);
+		});
+		this.addCommand("hz7", "f", {|msg|
+			synth.set(\hz7, msg[1]);
+		});
+		this.addCommand("hz8", "f", {|msg|
+			synth.set(\hz8, msg[1]);
+		});
+		this.addCommand("hz9", "f", {|msg|
+			synth.set(\hz9, msg[1]);
+		});
+		this.addCommand("hz10", "f", {|msg|
+			synth.set(\hz10, msg[1]);
+		});
+		this.addCommand("hz11", "f", {|msg|
+			synth.set(\hz11, msg[1]);
+		});
+		this.addCommand("hz12", "f", {|msg|
+			synth.set(\hz12, msg[1]);
+		});
+
+		this.addCommand("a1", "f", {|msg|
+			synth.set(\a1, msg[1]);
+		});
+		this.addCommand("a2", "f", {|msg|
+			synth.set(\a2, msg[1]);
+		});
+		this.addCommand("a3", "f", {|msg|
+			synth.set(\a3, msg[1]);
+		});
+		this.addCommand("a4", "f", {|msg|
+			synth.set(\a4, msg[1]);
+		});
+		this.addCommand("a5", "f", {|msg|
+			synth.set(\a5, msg[1]);
+		});
+		this.addCommand("a6", "f", {|msg|
+			synth.set(\a6, msg[1]);
+		});
+		this.addCommand("a7", "f", {|msg|
+			synth.set(\a7, msg[1]);
+		});
+		this.addCommand("a8", "f", {|msg|
+			synth.set(\a8, msg[1]);
+		});
+		this.addCommand("a9", "f", {|msg|
+			synth.set(\a9, msg[1]);
+		});
+		this.addCommand("a10", "f", {|msg|
+			synth.set(\a10, msg[1]);
+		});
+		this.addCommand("a11", "f", {|msg|
+			synth.set(\a11, msg[1]);
+		});
+		this.addCommand("a12", "f", {|msg|
+			synth.set(\a12, msg[1]);
+		});
+
+		this.addCommand("effect_graintrigger", "f", {|msg|
+			synth.set(\effect_graintrigger, msg[1]);
+		});
+		this.addCommand("grainDur", "f", {|msg|
+			synth.set(\grainDur, msg[1]);
+		});
+		this.addCommand("effect_grainrate", "f", {|msg|
+			synth.set(\effect_grainrate, msg[1]);
+		});
+		this.addCommand("effect_grainpos", "f", {|msg|
+			synth.set(\effect_grainpos, msg[1]);
+		});
+		this.addCommand("effect_graininterp", "f", {|msg|
+			synth.set(\effect_graininterp, msg[1]);
+		});
+		this.addCommand("effect_grainmul", "f", {|msg|
+			synth.set(\effect_grainmul, msg[1]);
+		});
+	}
+
+	free {
+
+            synth.free;
+	}
+
+}
